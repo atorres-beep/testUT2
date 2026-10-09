@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6558d9">
+<title>Reto FOL · Prevención de riesgos laborales</title>
+<style>
+  :root {
+    --ink: #202043;
+    --muted: #70728b;
+    --purple: #6558d9;
+    --purple-dark: #4b40b7;
+    --purple-soft: #efedff;
+    --teal: #13a89e;
+    --teal-soft: #e7fbf7;
+    --red: #d94d6a;
+    --red-soft: #fff0f3;
+    --line: #e7e8f2;
+    --paper: #ffffff;
+    --bg: #f4f5fc;
+    --shadow: 0 22px 60px rgba(45, 43, 105, .12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: radial-gradient(circle at 10% 8%, rgba(117, 105, 239, .12), transparent 29rem),
+                radial-gradient(circle at 95% 90%, rgba(19, 168, 158, .10), transparent 28rem), var(--bg);
+  }
+  button { font: inherit; }
+  .shell { width: min(100% - 28px, 900px); margin: 0 auto; padding: 28px 0 34px; }
+  .topline { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:0 4px 18px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.01em; }
+  .brand-mark { width:42px; height:42px; display:grid; place-items:center; border-radius:14px; color:#fff; font-size:22px; background:linear-gradient(135deg,#766af0,#4f46bf); box-shadow:0 9px 20px rgba(101,88,217,.25); }
+  .brand small { display:block; color:var(--muted); font-size:12px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; margin-top:2px; }
+  .pill { background:#fff; border:1px solid var(--line); color:#565779; border-radius:999px; padding:9px 13px; font-size:12px; font-weight:800; white-space:nowrap; }
+  .hero { position:relative; overflow:hidden; padding:34px 34px 28px; border-radius:28px; color:#fff; background:linear-gradient(125deg,#5148bd 0%,#7064e7 58%,#8a7df0 100%); box-shadow:var(--shadow); }
+  .hero:before,.hero:after { content:""; position:absolute; border-radius:50%; background:rgba(255,255,255,.08); pointer-events:none; }
+  .hero:before { width:270px;height:270px;right:-80px;top:-120px; }
+  .hero:after { width:180px;height:180px;right:130px;bottom:-140px; }
+  .hero-content { position:relative; z-index:1; }
+  .eyebrow { font-size:12px; font-weight:850; letter-spacing:.14em; text-transform:uppercase; opacity:.85; }
+  h1 { margin:10px 0 10px; font-size:clamp(28px,5vw,43px); line-height:1.08; letter-spacing:-.04em; }
+  .hero p { margin:0; max-width:620px; color:rgba(255,255,255,.86); line-height:1.65; font-size:15px; }
+  .feature-row { display:flex; flex-wrap:wrap; gap:9px; margin-top:22px; }
+  .feature { border:1px solid rgba(255,255,255,.2); border-radius:999px; padding:8px 11px; font-size:12px; font-weight:750; background:rgba(255,255,255,.11); }
+  .layout { display:grid; grid-template-columns:minmax(0,1fr) 220px; gap:18px; margin-top:18px; align-items:start; }
+  .card { background:var(--paper); border:1px solid rgba(226,227,241,.9); border-radius:24px; padding:26px; box-shadow:0 12px 32px rgba(37,38,85,.06); }
+  .welcome-card { min-height:280px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; }
+  .big-icon { display:grid; place-items:center; width:62px;height:62px;border-radius:20px;background:var(--purple-soft);font-size:30px;margin-bottom:17px; }
+  h2 { margin:0 0 10px; font-size:24px; letter-spacing:-.03em; }
+  .intro-copy { color:var(--muted); line-height:1.65; margin:0 0 18px; }
+  .steps { display:grid; gap:12px; margin:4px 0 23px; color:#4c4e6d; font-size:14px; }
+  .steps span { display:flex; align-items:flex-start; gap:10px; }
+  .step-n { display:grid; place-items:center; flex:0 0 25px; height:25px; border-radius:8px; background:#f0efff; color:var(--purple); font-weight:850; font-size:12px; }
+  .primary,.secondary { border:0; border-radius:14px; min-height:48px; padding:13px 18px; cursor:pointer; font-weight:850; transition:transform .15s ease, box-shadow .15s ease, background .15s ease; }
+  .primary { background:var(--purple); color:#fff; box-shadow:0 9px 18px rgba(101,88,217,.2); }
+  .primary:hover { background:var(--purple-dark); transform:translateY(-1px); }
+  .secondary { color:var(--purple); background:var(--purple-soft); }
+  .secondary:hover { background:#e3e0ff; }
+  button:focus-visible { outline:3px solid #1caaa0; outline-offset:3px; }
+  .side { display:grid; gap:14px; }
+  .stat-card { border-radius:20px; padding:19px; background:#fff; border:1px solid var(--line); box-shadow:0 10px 24px rgba(37,38,85,.04); }
+  .stat-label { color:var(--muted); font-size:11px; font-weight:850; text-transform:uppercase; letter-spacing:.1em; }
+  .stat-number { font-size:32px; line-height:1.1; font-weight:900; letter-spacing:-.04em; margin-top:8px; }
+  .stat-note { color:var(--muted); font-size:12px; margin-top:5px; }
+  .mini-progress { height:7px; overflow:hidden; background:#eeeff7; border-radius:99px; margin-top:13px; }
+  .mini-progress > div { height:100%; width:0%; background:linear-gradient(90deg,var(--purple),#17b5a4); transition:width .3s ease; }
+  .question-card { display:none; }
+  .question-top { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:15px; }
+  .category { background:#f1f0ff; color:var(--purple-dark); padding:7px 10px; border-radius:9px; font-size:11px; font-weight:850; letter-spacing:.03em; }
+  .q-count { color:var(--muted); font-size:12px; font-weight:800; }
+  .progress-track { height:8px; background:#eeeff7; border-radius:99px; overflow:hidden; margin-bottom:26px; }
+  .progress-fill { width:0%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#6558d9,#20b4a6); transition:width .3s ease; }
+  .question-title { font-size:clamp(20px,3vw,27px); line-height:1.3; letter-spacing:-.03em; margin:0 0 9px; }
+  .question-sub { color:var(--muted); font-size:13px; margin:0 0 20px; }
+  .answers { display:grid; gap:10px; }
+  .answer { display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:13px 14px; min-height:58px; border:1.5px solid var(--line); border-radius:15px; background:#fff; color:var(--ink); cursor:pointer; font-size:14px; line-height:1.4; transition:border-color .14s ease, background .14s ease, transform .14s ease; }
+  .answer:hover:not(:disabled) { border-color:#aaa3f7; background:#fbfaff; transform:translateY(-1px); }
+  .answer:disabled { cursor:default; opacity:.8; }
+  .letter { flex:0 0 31px; height:31px; border-radius:10px; display:grid; place-items:center; background:#f2f3fa; color:#737591; font-size:12px; font-weight:900; }
+  .answer.correct { border-color:#24b4a0; background:var(--teal-soft); opacity:1; }
+  .answer.correct .letter { background:#c7f4eb; color:#087c70; }
+  .answer.wrong { border-color:#e77d92; background:var(--red-soft); opacity:1; }
+  .answer.wrong .letter { background:#ffdae2; color:#af2947; }
+  .feedback { display:none; margin-top:16px; border-radius:16px; padding:14px 16px; line-height:1.5; font-size:14px; }
+  .feedback.show { display:block; animation:fadeIn .2s ease-out; }
+  .feedback.bad { color:#8f2d46; background:var(--red-soft); border:1px solid #ffd4dd; }
+  .feedback.good { color:#12665d; background:var(--teal-soft); border:1px solid #c5f0e8; }
+  .feedback strong { display:block; margin-bottom:3px; }
+  .question-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:20px; }
+  .try-note { color:var(--muted); font-size:12px; }
+  .next-btn { display:none; }
+  .finish-card { display:none; text-align:center; }
+  .finish-medal { width:88px;height:88px;border-radius:28px;display:grid;place-items:center;margin:0 auto 16px;font-size:43px;background:linear-gradient(135deg,#fff4c9,#ffe6ab); }
+  .final-score { font-size:clamp(42px,8vw,64px); font-weight:950; letter-spacing:-.06em; color:var(--purple); line-height:1.05; margin:16px 0 5px; }
+  .finish-copy { color:var(--muted); line-height:1.6; max-width:480px; margin:0 auto 20px; }
+  .results-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:23px 0; }
+  .result-box { padding:15px 10px; border-radius:15px; background:#f7f7fd; }
+  .result-box b { display:block; font-size:23px; letter-spacing:-.04em; }
+  .result-box span { display:block; color:var(--muted); font-size:11px; margin-top:3px; }
+  .review { text-align:left; margin-top:22px; border-top:1px solid var(--line); padding-top:19px; }
+  .review h3 { font-size:16px; margin:0 0 12px; }
+  .review-item { background:#fafaff; border:1px solid var(--line); padding:13px 14px; border-radius:13px; margin-top:9px; }
+  .review-item b { display:block; font-size:13px; margin-bottom:5px; }
+  .review-item p { margin:0; color:var(--muted); font-size:12px; line-height:1.5; }
+  .source-footer { color:#8b8da4; text-align:center; font-size:11px; line-height:1.6; padding:23px 10px 0; }
+  .source-footer a { color:#6661b7; text-decoration:none; }
+  .source-footer a:hover { text-decoration:underline; }
+  .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+  @keyframes fadeIn { from {opacity:0;transform:translateY(4px)} to {opacity:1;transform:translateY(0)} }
+  @media (max-width:720px) {
+    .shell { width:min(100% - 20px, 620px); padding-top:15px; }
+    .layout { grid-template-columns:1fr; }
+    .side { grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; order:-1; }
+    .stat-card { padding:13px; border-radius:16px; }
+    .stat-number { font-size:24px; }
+    .stat-label { font-size:9px; letter-spacing:.06em; }
+    .stat-note { font-size:10px; }
+    .mini-progress { margin-top:9px; }
+    .hero { padding:25px 22px 23px; border-radius:23px; }
+    .card { padding:21px 17px; border-radius:21px; }
+    .topline { margin-bottom:13px; }
+    .pill { font-size:10px; padding:8px 10px; }
+    .question-top { align-items:flex-start; }
+    .answer { min-height:55px; padding:11px; }
+  }
+  @media (max-width:390px) { .side { grid-template-columns:1fr 1fr; } .stat-card:last-child { grid-column:span 2; } }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topline">
+    <div class="brand"><div class="brand-mark">✓</div><div>RETO FOL<small>Aprender · practicar · mejorar</small></div></div>
+    <div class="pill">🦺 Prevención de riesgos</div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">Cuestionario interactivo</div>
+      <h1>¿Controlas los riesgos laborales?</h1>
+      <p>Demuestra lo que sabes sobre prevención de riesgos laborales. Responde, aprende de los errores y consigue la máxima puntuación.</p>
+      <div class="feature-row"><span class="feature">🎯 30 preguntas</span><span class="feature">🔁 Puedes volver a intentarlo</span><span class="feature">💡 Explicaciones al responder</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <section class="card welcome-card" id="welcome">
+        <div class="big-icon">🧠</div>
+        <h2>¡Empieza el reto!</h2>
+        <p class="intro-copy">Cada pregunta tiene una única respuesta correcta. Si te equivocas, podrás probar otra opción antes de continuar.</p>
+        <div class="steps">
+          <span><i class="step-n">1</i><span><b>Responde:</b> elige la opción que consideres correcta.</span></span>
+          <span><i class="step-n">2</i><span><b>Aprende:</b> recibirás una pista si fallas y una explicación al acertar.</span></span>
+          <span><i class="step-n">3</i><span><b>Suma puntos:</b> 10 puntos al primer intento, 6 al segundo y 3 a partir del tercero.</span></span>
+        </div>
+        <button class="primary" id="startBtn">Comenzar el cuestionario <span aria-hidden="true">→</span></button>
+      </section>
+
+      <section class="card question-card" id="questionCard" aria-live="polite">
+        <div class="question-top"><span class="category" id="category">FACTORES DE RIESGO</span><span class="q-count" id="qCount">Pregunta 1 de 30</span></div>
+        <div class="progress-track" aria-label="Progreso del cuestionario"><div class="progress-fill" id="progressFill"></div></div>
+        <h2 class="question-title" id="questionTitle"></h2>
+        <p class="question-sub">Selecciona una respuesta. Puedes cambiar de opción si la primera no es correcta.</p>
+        <div class="answers" id="answers"></div>
+        <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+        <div class="question-actions"><span class="try-note" id="tryNote">Puntos por acertar: 10</span><button class="primary next-btn" id="nextBtn">Siguiente pregunta →</button></div>
+      </section>
+
+      <section class="card finish-card" id="finishCard" aria-live="polite">
+        <div class="finish-medal" id="medal">🏆</div>
+        <div class="eyebrow" style="color:var(--purple)">Reto completado</div>
+        <h2 id="finishTitle">¡Buen trabajo!</h2>
+        <div class="final-score" id="finalScore">0/300</div>
+        <p class="finish-copy" id="finishCopy"></p>
+        <div class="results-grid">
+          <div class="result-box"><b id="firstTryResult">0</b><span>Acertadas a la primera</span></div>
+          <div class="result-box"><b id="retryResult">0</b><span>Resueltas tras un error</span></div>
+          <div class="result-box"><b id="streakResult">0</b><span>Mejor racha</span></div>
+        </div>
+        <button class="primary" id="restartBtn">↻ Volver a jugar</button>
+        <div class="review" id="reviewSection" style="display:none"><h3>📝 Repasa las preguntas que te han costado</h3><div id="reviewList"></div></div>
+      </section>
+    </main>
+
+    <aside class="side" aria-label="Marcador">
+      <div class="stat-card"><div class="stat-label">Puntuación</div><div class="stat-number" id="scoreDisplay">0</div><div class="stat-note">de 300 puntos</div></div>
+      <div class="stat-card"><div class="stat-label">Racha actual</div><div class="stat-number" id="streakDisplay">0 🔥</div><div class="stat-note">aciertos seguidos</div></div>
+      <div class="stat-card"><div class="stat-label">Tu progreso</div><div class="stat-number" id="progressDisplay">0%</div><div class="stat-note" id="progressNote">30 preguntas por delante</div><div class="mini-progress"><div id="miniProgressFill"></div></div></div>
+    </aside>
+  </div>
+
+  <footer class="source-footer">
+    Cuestionario didáctico basado en el juego FOL de Wordwall, con preguntas reformuladas y respuestas revisadas. No sustituye la evaluación profesional de los riesgos laborales.<br>
+    Fuentes de referencia: <a href="https://www.boe.es/buscar/act.php?id=BOE-A-1995-24292" target="_blank" rel="noopener">Ley 31/1995</a> · <a href="https://www.boe.es/buscar/doc.php?id=BOE-A-2003-22861" target="_blank" rel="noopener">Ley 54/2003</a> · <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2006-22169" target="_blank" rel="noopener">RD 1299/2006</a> · <a href="https://www.boe.es/buscar/act.php?id=BOE-A-1997-17824" target="_blank" rel="noopener">RD 1215/1997</a> · <a href="https://www.insst.es/documentacion/colecciones-tecnicas/ntp-notas-tecnicas-de-prevencion/9-serie-ntp-numeros-296-a-330-ano-1994/ntp-330-sistema-simplificado-de-evaluacion-de-riesgos-de-accidente-1993" target="_blank" rel="noopener">INSST, NTP 330</a>.
+  </footer>
+</div>
+
+<script>
+const questions = [
+  {cat:'Factores de riesgo', q:'¿A qué tipo de riesgo se asocia principalmente el síndrome de burnout?', opts:['Riesgo de seguridad','Riesgo psicosocial','Riesgo biológico','Riesgo químico'], correct:'Riesgo psicosocial', hint:'Piensa en la organización del trabajo, el estrés y el bienestar emocional.', exp:'El burnout o síndrome de desgaste profesional se relaciona con factores psicosociales, como el estrés laboral crónico y una organización del trabajo inadecuada.'},
+  {cat:'Accidentes de trabajo', q:'¿Qué afirmación describe mejor un accidente de trabajo?', opts:['Solo es accidente laboral si sucede dentro del centro de trabajo.','Puede incluir una lesión ocurrida durante el trabajo y, si cumple los requisitos, un accidente al ir o volver del trabajo.','Cualquier lesión que ocurra en el tiempo libre es laboral.','Solo se considera accidente si hay daños materiales.'], correct:'Puede incluir una lesión ocurrida durante el trabajo y, si cumple los requisitos, un accidente al ir o volver del trabajo.', hint:'Ten en cuenta tanto las lesiones relacionadas con el trabajo como el llamado accidente «in itinere».', exp:'La definición legal incluye las lesiones sufridas con ocasión o por consecuencia del trabajo. Los accidentes al ir o volver del trabajo pueden considerarse «in itinere» si se cumplen los requisitos aplicables; no cualquier incidente durante el trayecto lo es automáticamente.'},
+  {cat:'Factores de riesgo', q:'¿Cuál de estas opciones es un ejemplo de riesgo psicosocial?', opts:['Exposición a un disolvente','Ruido elevado','Estrés laboral por sobrecarga de trabajo','Vibraciones de una máquina'], correct:'Estrés laboral por sobrecarga de trabajo', hint:'Se relaciona con la organización, las demandas y las relaciones en el trabajo.', exp:'La carga excesiva de trabajo, la falta de control, los conflictos o el acoso pueden actuar como factores de riesgo psicosocial.'},
+  {cat:'Condiciones ambientales', q:'¿Qué agentes pueden originar riesgos relacionados con las condiciones ambientales del trabajo?', opts:['Únicamente agentes físicos','Únicamente agentes químicos','Agentes físicos, químicos y biológicos','Solo factores ergonómicos'], correct:'Agentes físicos, químicos y biológicos', hint:'Piensa en el ruido, las sustancias y los microorganismos.', exp:'Entre los agentes ambientales están los físicos (ruido, vibraciones, temperatura), los químicos (gases, vapores, polvo) y los biológicos (virus, bacterias, hongos).'},
+  {cat:'Clasificación de riesgos', q:'¿Qué grupo recoge cuatro categorías habituales de riesgos laborales?', opts:['Económicos, comerciales, fiscales y jurídicos','Seguridad, ambientales, ergonómicos y psicosociales','Personales, domésticos, académicos y sociales','Mecánicos, administrativos, financieros y familiares'], correct:'Seguridad, ambientales, ergonómicos y psicosociales', hint:'Incluye accidentes, exposición a agentes, carga física y organización del trabajo.', exp:'Es una clasificación didáctica habitual. Algunas fuentes agrupan las categorías de forma diferente, pero estos cuatro bloques permiten ordenar muchos riesgos laborales.'},
+  {cat:'Evaluación de riesgos', q:'¿Cuál es la diferencia entre riesgo y accidente?', opts:['El riesgo es la posibilidad de que ocurra un daño; el accidente es el suceso que llega a producirse.','El riesgo solo existe después de que ocurra el accidente.','Son dos palabras que significan exactamente lo mismo.','El accidente es la posibilidad y el riesgo es el hecho ocurrido.'], correct:'El riesgo es la posibilidad de que ocurra un daño; el accidente es el suceso que llega a producirse.', hint:'Uno se refiere a la posibilidad; el otro, al hecho que sucede.', exp:'El riesgo se valora atendiendo, entre otros aspectos, a la probabilidad y a la gravedad del daño. El accidente es un suceso que se materializa; el daño es la lesión o consecuencia que puede provocar.'},
+  {cat:'Riesgos psicosociales', q:'¿Cuál de estas situaciones puede generar un riesgo psicosocial?', opts:['Un reparto desigual de tareas y una sobrecarga continuada','Objetivos claros y realistas','Pausas adecuadas durante la jornada','Comunicación respetuosa dentro del equipo'], correct:'Un reparto desigual de tareas y una sobrecarga continuada', hint:'Busca la situación que puede generar tensión, conflicto o sensación de injusticia.', exp:'Una carga excesiva o una distribución injusta de tareas puede causar estrés, conflictos y otros efectos negativos sobre la salud.'},
+  {cat:'Ergonomía', q:'Las posturas forzadas, los movimientos repetitivos y los esfuerzos excesivos se relacionan principalmente con riesgos…', opts:['Psicosociales','Biológicos','Ergonómicos','Eléctricos'], correct:'Ergonómicos', hint:'Se refieren a cómo se adapta el trabajo a la persona y a las exigencias físicas de la tarea.', exp:'Los riesgos ergonómicos pueden derivar de posturas forzadas, repetición de movimientos, manipulación manual de cargas o esfuerzos físicos excesivos.'},
+  {cat:'Legislación', q:'¿Qué ley española regula la prevención de riesgos laborales y es de 8 de noviembre?', opts:['Ley 31/1995','Ley 32/1995','Ley 31/1994','Ley 31/1996'], correct:'Ley 31/1995', hint:'El año es 1995; fíjate en el número de la ley.', exp:'La norma básica es la Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales.'},
+  {cat:'Legislación', q:'¿Qué norma reformó el marco de la prevención de riesgos laborales el 12 de diciembre de 2003?', opts:['Ley 54/2003','Ley 54/2004','Ley 54/2002','Ley 54/2005'], correct:'Ley 54/2003', hint:'El número y el año aparecen en el título oficial de la norma.', exp:'La Ley 54/2003, de 12 de diciembre, reformó el marco normativo de la prevención de riesgos laborales, reforzando la integración de la prevención en la empresa.'},
+  {cat:'Evaluación de riesgos', q:'Si un riesgo se clasifica como «intolerable», ¿qué debe hacerse?', opts:['Continuar trabajando y revisar el riesgo al final del año','No iniciar ni continuar el trabajo hasta reducir el riesgo','Anotarlo, pero no adoptar medidas','Aceptar el riesgo si la tarea es habitual'], correct:'No iniciar ni continuar el trabajo hasta reducir el riesgo', hint:'Es la categoría que requiere una actuación inmediata antes de trabajar.', exp:'Un riesgo intolerable exige no comenzar o no continuar la actividad mientras no se reduzca el riesgo. La clasificación concreta depende del método de evaluación utilizado.'},
+  {cat:'Causas de accidentes', q:'En una clasificación habitual, ¿cómo se agrupan las causas básicas de los accidentes?', opts:['En factores personales y factores relacionados con el trabajo','Únicamente en factores meteorológicos','Solo en causas económicas','En factores de ocio y familiares'], correct:'En factores personales y factores relacionados con el trabajo', hint:'Un grupo se refiere a la persona; el otro, a la tarea, los equipos o la organización.', exp:'Las causas básicas suelen agruparse en factores personales y factores del trabajo, que pueden incluir equipos, métodos, condiciones y organización.'},
+  {cat:'Seguridad', q:'¿Qué ejemplo corresponde a un factor de riesgo relacionado con la seguridad?', opts:['Ruido ambiental y temperatura','Estrés y carga mental','Máquinas, herramientas y objetos que pueden causar golpes o cortes','Falta de reconocimiento profesional'], correct:'Máquinas, herramientas y objetos que pueden causar golpes o cortes', hint:'Piensa en elementos que pueden provocar accidentes de forma directa.', exp:'Los equipos, las máquinas, las herramientas y los objetos pueden originar golpes, cortes, atrapamientos u otros accidentes si no se controlan adecuadamente.'},
+  {cat:'Agentes químicos', q:'¿Cuál de estos grupos incluye agentes químicos capaces de causar daños a la salud?', opts:['Disolventes, sustancias irritantes y agentes sensibilizantes','Virus y bacterias exclusivamente','Ruido y vibraciones','Posturas forzadas y movimientos repetitivos'], correct:'Disolventes, sustancias irritantes y agentes sensibilizantes', hint:'Son sustancias o productos que pueden inhalarse, tocarse o entrar en el organismo.', exp:'Los agentes químicos pueden ser irritantes, sensibilizantes, tóxicos, cancerígenos, mutágenos, entre otros. El efecto depende de la sustancia, la dosis y la exposición.'},
+  {cat:'Enfermedades profesionales', q:'¿Qué real decreto aprobó el cuadro de enfermedades profesionales de la Seguridad Social?', opts:['Real Decreto 1296/2006','Real Decreto 1297/2006','Real Decreto 1298/2006','Real Decreto 1299/2006'], correct:'Real Decreto 1299/2006', hint:'El número correcto termina en 99.', exp:'El Real Decreto 1299/2006, de 10 de noviembre, aprobó el cuadro de enfermedades profesionales en el sistema de la Seguridad Social.'},
+  {cat:'Ergonomía', q:'La manipulación manual de cargas y los esfuerzos físicos excesivos se relacionan principalmente con…', opts:['Riesgos ergonómicos','Riesgos biológicos','Riesgos psicosociales únicamente','Riesgos relacionados con la señalización'], correct:'Riesgos ergonómicos', hint:'Se relaciona con exigencias físicas, movimientos y posturas de trabajo.', exp:'La manipulación de cargas, los esfuerzos intensos y las posturas inadecuadas pueden provocar lesiones musculoesqueléticas y se abordan desde la ergonomía.'},
+  {cat:'Evaluación de riesgos', q:'¿Cuándo debe evaluarse el riesgo laboral?', opts:['Solo cuando ya ha ocurrido un accidente grave','Al inicio y cuando cambios o daños en la salud hagan necesario revisar la evaluación','Nunca, si el trabajo ya se ha realizado durante años','Únicamente cuando lo solicite un trabajador'], correct:'Al inicio y cuando cambios o daños en la salud hagan necesario revisar la evaluación', hint:'La evaluación no es un trámite que se realiza una sola vez para siempre.', exp:'La evaluación debe realizarse inicialmente y revisarse cuando proceda, por ejemplo, ante cambios en las condiciones de trabajo, daños para la salud o cuando lo establezca la normativa o la planificación preventiva.'},
+  {cat:'Funciones preventivas', q:'¿Qué función corresponde al nivel superior de prevención en relación con la evaluación de riesgos?', opts:['Limitarse a rellenar listas de comprobación sencillas','Realizar evaluaciones que requieren una estrategia de medición o una interpretación especializada','Evitar cualquier medición, aunque sea necesaria','Sustituir siempre al personal sanitario'], correct:'Realizar evaluaciones que requieren una estrategia de medición o una interpretación especializada', hint:'Es el nivel que aborda evaluaciones de mayor complejidad técnica.', exp:'Las funciones de nivel superior incluyen evaluaciones que exigen una estrategia de medición o una interpretación no mecánica de los criterios de evaluación, además de otras funciones preventivas especializadas.'},
+  {cat:'Evaluación de riesgos', q:'¿Cuál es el objetivo de la evaluación de riesgos laborales?', opts:['Identificar y valorar los riesgos','Ayudar a decidir qué medidas preventivas hacen falta','Cumplir las obligaciones preventivas aplicables','Todas las anteriores'], correct:'Todas las anteriores', hint:'La evaluación permite conocer los riesgos y decidir cómo controlarlos.', exp:'La evaluación permite identificar peligros, estimar y valorar los riesgos, establecer prioridades y planificar medidas preventivas; además, forma parte de las obligaciones legales.'},
+  {cat:'Evaluación de riesgos', q:'¿Qué secuencia representa mejor el proceso general de evaluación y seguimiento de los riesgos?', opts:['Definir medidas → hacer seguimiento → identificar peligros → valorar','Identificar peligros → analizar y estimar riesgos → valorar prioridades → definir medidas y hacer seguimiento','Hacer seguimiento → valorar → identificar peligros → definir medidas','Analizar → dar por cerrado el proceso sin revisar las medidas'], correct:'Identificar peligros → analizar y estimar riesgos → valorar prioridades → definir medidas y hacer seguimiento', hint:'Primero se identifica lo que puede causar daño; las medidas y el seguimiento vienen después.', exp:'El proceso general parte de identificar los peligros y estimar los riesgos, prioriza su importancia, define medidas preventivas y comprueba posteriormente su eficacia.'},
+  {cat:'Método NTP 330', q:'En el método simplificado de la NTP 330, ¿qué indica un nivel de deficiencia «deficiente»?', opts:['No se ha detectado ninguna anomalía destacable','Se ha detectado algún factor de riesgo significativo que debe corregirse','Todos los riesgos son intolerables','Las medidas preventivas son perfectas y no requieren revisión'], correct:'Se ha detectado algún factor de riesgo significativo que debe corregirse', hint:'No es la situación más grave, pero sí hay una deficiencia relevante que corregir.', exp:'En la NTP 330, el nivel de deficiencia 6 se describe indicando que se ha detectado algún factor de riesgo significativo que precisa ser corregido.'},
+  {cat:'Método NTP 330', q:'Según los niveles de exposición de la NTP 330, una exposición «esporádica» se produce…', opts:['Continuamente durante toda la jornada','Varias veces en la jornada y durante periodos prolongados','Irregularmente','Varias veces en la jornada durante periodos cortos'], correct:'Irregularmente', hint:'Es la categoría de exposición menos frecuente.', exp:'En la escala de exposición de la NTP 330, la exposición esporádica se caracteriza por producirse de forma irregular.'},
+  {cat:'Método NTP 330', q:'En la NTP 330, ¿qué intervalo numérico corresponde a un nivel de probabilidad alto?', opts:['Entre 40 y 24','Entre 24 y 20','Entre 20 y 10','Entre 8 y 6'], correct:'Entre 20 y 10', hint:'El nivel muy alto está en el intervalo superior; el alto es el siguiente.', exp:'La NTP 330 establece para el nivel de probabilidad alto el intervalo entre 20 y 10. Son valores orientativos del método, no probabilidades expresadas en porcentaje.'},
+  {cat:'Método NTP 330', q:'En la escala de consecuencias de la NTP 330, ¿a qué categoría corresponde el valor 60?', opts:['Leve','Grave','Muy grave','Mortal'], correct:'Muy grave', hint:'Por encima de esta categoría se sitúa el valor 100, asociado a consecuencias mortales o catastróficas.', exp:'En la escala de consecuencias de la NTP 330, el valor 60 se asocia a consecuencias muy graves; el valor 100 se reserva para consecuencias mortales o catastróficas.'},
+  {cat:'Método NTP 330', q:'Si el nivel de probabilidad está entre 10 y 20 y el nivel de consecuencias es 60, ¿qué nivel de riesgo resulta?', opts:['Entre 120 y 240','Entre 600 y 1.200','Entre 360 y 480','Entre 1.440 y 2.400'], correct:'Entre 600 y 1.200', hint:'Multiplica el nivel de probabilidad por el nivel de consecuencias: NR = NP × NC.', exp:'La NTP 330 calcula el nivel de riesgo multiplicando el nivel de probabilidad por el nivel de consecuencias. Por tanto, 10 × 60 = 600 y 20 × 60 = 1.200.'},
+  {cat:'Medidas preventivas', q:'¿Qué medida puede reducir directamente la exposición de las personas a una operación peligrosa?', opts:['Automatizar la tarea u operación peligrosa','Esperar a que ocurra un accidente para actuar','Retirar las señales de seguridad','Aumentar la velocidad sin evaluar el riesgo'], correct:'Automatizar la tarea u operación peligrosa', hint:'La persona deja de tener que ejecutar directamente la operación peligrosa.', exp:'La automatización puede reducir o evitar la exposición directa de las personas a determinadas operaciones peligrosas. La medida debe diseñarse y mantenerse de forma segura.'},
+  {cat:'Legislación', q:'¿Qué real decreto establece disposiciones mínimas para la utilización segura de los equipos de trabajo?', opts:['Real Decreto 1215/1997, de 18 de julio','Real Decreto 1215/1995, de 18 de julio','Real Decreto 1216/1997, de 18 de julio','Real Decreto 1215/2007, de 18 de julio'], correct:'Real Decreto 1215/1997, de 18 de julio', hint:'El número correcto es 1215 y el año es 1997.', exp:'El Real Decreto 1215/1997 establece las disposiciones mínimas de seguridad y salud para la utilización por los trabajadores de los equipos de trabajo.'},
+  {cat:'Riesgo eléctrico', q:'¿Qué unidad se utiliza para medir la intensidad de corriente eléctrica?', opts:['Vatio (W)','Ohmio (Ω)','Amperio (A)','Julio (J)'], correct:'Amperio (A)', hint:'Su símbolo es A.', exp:'La intensidad de corriente eléctrica se mide en amperios (A). El voltio mide tensión y el ohmio, resistencia eléctrica.'},
+  {cat:'Riesgo eléctrico', q:'¿Cuál es la diferencia entre contacto eléctrico directo e indirecto?', opts:['Directo: tocar una parte activa en tensión; indirecto: tocar una masa que queda en tensión por un fallo.','Directo: tocar cualquier objeto aislante; indirecto: tocar un interruptor apagado.','Ambos significan exactamente lo mismo.','Directo: tocar una masa sin tensión; indirecto: tocar siempre un cable activo.'], correct:'Directo: tocar una parte activa en tensión; indirecto: tocar una masa que queda en tensión por un fallo.', hint:'Uno implica tocar directamente una parte activa; el otro, una parte metálica que normalmente no debería estar en tensión.', exp:'El contacto directo se produce al tocar partes activas en tensión. El indirecto ocurre al tocar una masa o parte conductora accesible que ha quedado accidentalmente en tensión por un defecto.'},
+  {cat:'Señalización de seguridad', q:'¿Qué forma y color identifican habitualmente una señal de advertencia de peligro?', opts:['Círculo azul con pictograma blanco','Triángulo amarillo con borde negro y pictograma negro','Círculo rojo con una barra diagonal','Rectángulo verde con pictograma blanco'], correct:'Triángulo amarillo con borde negro y pictograma negro', hint:'Es una señal triangular y usa el amarillo para llamar la atención sobre un peligro.', exp:'Las señales de advertencia suelen ser triangulares, con fondo amarillo, borde negro y pictograma negro. El diseño concreto debe ajustarse a la normativa de señalización aplicable.'}
+];
+
+let current = 0;
+let score = 0;
+let streak = 0;
+let bestStreak = 0;
+let firstTryCorrect = 0;
+let retrySolved = 0;
+let attempts = 0;
+let currentTries = 0;
+let missedAtLeastOnce = new Set();
+let runStats = [];
+let shuffledOptions = [];
+const $ = (id) => document.getElementById(id);
+
+function shuffle(list) {
+  const copy = [...list];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+function pointsForTry(n) { return n === 1 ? 10 : n === 2 ? 6 : 3; }
+function updateStats() {
+  $('scoreDisplay').textContent = score;
+  $('streakDisplay').textContent = `${streak} 🔥`;
+  const solvedCurrent = $('nextBtn') && $('nextBtn').style.display === 'inline-block' ? 1 : 0;
+  const answered = Math.min(questions.length, current + solvedCurrent);
+  const pct = Math.round((answered / questions.length) * 100);
+  $('progressDisplay').textContent = `${pct}%`;
+  $('progressNote').textContent = answered >= questions.length ? 'Reto completado' : `${questions.length - answered} preguntas por delante`;
+  $('miniProgressFill').style.width = `${pct}%`;
+  $('progressFill').style.width = `${pct}%`;
+}
+function startGame() {
+  current = 0; score = 0; streak = 0; bestStreak = 0; firstTryCorrect = 0; retrySolved = 0; attempts = 0;
+  currentTries = 0; missedAtLeastOnce = new Set(); runStats = [];
+  $('welcome').style.display = 'none'; $('finishCard').style.display = 'none'; $('questionCard').style.display = 'block';
+  renderQuestion(); updateStats();
+}
+function renderQuestion() {
+  currentTries = 0;
+  const item = questions[current];
+  shuffledOptions = shuffle(item.opts);
+  $('category').textContent = item.cat.toUpperCase();
+  $('qCount').textContent = `Pregunta ${current + 1} de ${questions.length}`;
+  $('questionTitle').textContent = item.q;
+  $('progressFill').style.width = `${(current / questions.length) * 100}%`;
+  $('answers').innerHTML = '';
+  $('feedback').className = 'feedback';
+  $('feedback').innerHTML = '';
+  $('nextBtn').style.display = 'none';
+  $('tryNote').textContent = `Puntos por acertar: 10`;
+  shuffledOptions.forEach((option, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'answer';
+    btn.innerHTML = `<span class="letter">${String.fromCharCode(65 + i)}</span><span></span>`;
+    btn.querySelector('span:last-child').textContent = option;
+    btn.addEventListener('click', () => chooseAnswer(btn, option));
+    $('answers').appendChild(btn);
+  });
+  updateStats();
+}
+function chooseAnswer(button, choice) {
+  const item = questions[current];
+  if ($('nextBtn').style.display === 'block') return;
+  currentTries += 1; attempts += 1;
+  if (choice === item.correct) {
+    const earned = pointsForTry(currentTries);
+    score += earned;
+    if (currentTries === 1) firstTryCorrect += 1; else retrySolved += 1;
+    streak += 1; bestStreak = Math.max(bestStreak, streak);
+    [...$('answers').querySelectorAll('.answer')].forEach(btn => {
+      btn.disabled = true;
+      if (btn.querySelector('span:last-child').textContent === item.correct) btn.classList.add('correct');
+    });
+    $('feedback').className = 'feedback show good';
+    $('feedback').innerHTML = `<strong>¡Correcto! +${earned} puntos ${currentTries > 1 ? '(con reintento)' : ''}</strong>${item.exp}`;
+    $('tryNote').textContent = currentTries === 1 ? '¡A la primera! Sigue así.' : `Resuelta en ${currentTries} intentos.`;
+    $('nextBtn').style.display = 'inline-block';
+    $('nextBtn').textContent = current === questions.length - 1 ? 'Ver resultados →' : 'Siguiente pregunta →';
+  } else {
+    missedAtLeastOnce.add(current);
+    streak = 0;
+    button.classList.add('wrong'); button.disabled = true;
+    $('feedback').className = 'feedback show bad';
+    const hintText = currentTries === 1 ? item.hint : 'Vuelve a leer las opciones y piensa qué concepto encaja mejor.';
+    $('feedback').innerHTML = `<strong>No es esa. ¡Puedes intentarlo otra vez!</strong><span>${hintText}</span>`;
+    $('tryNote').textContent = `Intento ${currentTries}. Si aciertas ahora, sumarás ${pointsForTry(currentTries + 1)} puntos.`;
+  }
+  if (!runStats[current]) runStats[current] = { tries: 0, solved: false };
+  runStats[current].tries = currentTries;
+  updateStats();
+}
+function nextQuestion() {
+  if (current < questions.length - 1) { current += 1; renderQuestion(); }
+  else showFinish();
+}
+function showFinish() {
+  current = questions.length;
+  $('questionCard').style.display = 'none'; $('finishCard').style.display = 'block';
+  $('progressFill').style.width = '100%';
+  $('progressDisplay').textContent = '100%'; $('progressNote').textContent = 'Reto completado'; $('miniProgressFill').style.width = '100%';
+  $('scoreDisplay').textContent = score; $('streakDisplay').textContent = `${streak} 🔥`;
+  const pct = Math.round(score / (questions.length * 10) * 100);
+  let title, copy, medal;
+  if (pct >= 90) { title = '¡Experto/a en prevención!'; copy = 'Tienes un dominio excelente de los conceptos. Sigue aplicándolos con criterio y revisando la normativa.'; medal = '🏆'; }
+  else if (pct >= 75) { title = '¡Muy buen trabajo!'; copy = 'Tienes una buena base. Repasa las preguntas en las que has necesitado más de un intento para consolidar los conceptos.'; medal = '🥇'; }
+  else if (pct >= 50) { title = '¡Vas por buen camino!'; copy = 'Has avanzado y has podido corregir tus errores. Repasa las explicaciones y vuelve a intentarlo para mejorar tu puntuación.'; medal = '📚'; }
+  else { title = '¡A seguir practicando!'; copy = 'Este reto sirve para aprender. Revisa las explicaciones y juega otra vez: cada intento te ayudará a afianzar los conceptos.'; medal = '💪'; }
+  $('finishTitle').textContent = title; $('finishCopy').textContent = copy; $('medal').textContent = medal; $('finalScore').textContent = `${score}/300`;
+  $('firstTryResult').textContent = firstTryCorrect;
+  $('retryResult').textContent = retrySolved;
+  $('streakResult').textContent = bestStreak;
+  const reviewList = $('reviewList'); reviewList.innerHTML = '';
+  if (missedAtLeastOnce.size) {
+    $('reviewSection').style.display = 'block';
+    [...missedAtLeastOnce].sort((a,b)=>a-b).forEach(idx => {
+      const item = questions[idx];
+      const div = document.createElement('div'); div.className = 'review-item';
+      const title = document.createElement('b'); title.textContent = `${idx + 1}. ${item.q}`;
+      const p = document.createElement('p'); p.textContent = `Respuesta correcta: ${item.correct} ${item.exp}`;
+      div.append(title,p); reviewList.appendChild(div);
+    });
+  } else { $('reviewSection').style.display = 'none'; }
+  updateStats();
+}
+$('startBtn').addEventListener('click', startGame);
+$('nextBtn').addEventListener('click', nextQuestion);
+$('restartBtn').addEventListener('click', () => { $('finishCard').style.display = 'none'; $('welcome').style.display = 'flex'; $('scoreDisplay').textContent='0'; $('streakDisplay').textContent='0 🔥'; $('progressDisplay').textContent='0%'; $('progressNote').textContent='30 preguntas por delante'; $('miniProgressFill').style.width='0%'; });
+</script>
+</body>
+</html>
